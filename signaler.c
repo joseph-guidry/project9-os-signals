@@ -136,10 +136,11 @@ void signal_handler (int sig)
 		case SIGUSR1:
 			printf("RECEIVED A SIGUSR1 signal.");
 			printf("SKIPPING NEXT PRIME %d \n", current_prime = next_prime(current_prime, reverse_flag));
-			//display_data(&current_prime, reverse_flag);
 			break;
 		case SIGUSR2:
 			printf("RECEIVED A SIGUSR2 signal. Reverse the prime sequence.\n");
+			display_data(&current_prime, reverse_flag);
+			display_date();
 			reverse_flag *= -1;
 			break;
 		case SIGINT:
