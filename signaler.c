@@ -1,6 +1,6 @@
 #define _GNU_SOURCE	
 
-#include <pthread.h>	// Header file for pthread library
+#include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 			fprintf(stderr, "Failed to join thread\n");
 			return(3);
 		}
-		printf("reverse_flag = %d \n", reverse_flag);
+		//printf("reverse_flag = %d \n", reverse_flag);
 		display_data(&current_prime,  reverse_flag);
 		display_date();
 		
@@ -130,16 +130,16 @@ void signal_handler (int sig)
 	switch(sig)
 	{
 		case SIGHUP:
-			printf("RECEIVED A SIGHUP\n");
+			printf("RECEIVED A SIGHUP signal. Restarting sequence at 2.\n");
 			current_prime = 1; 
 			break;
 		case SIGUSR1:
-			printf("RECEIVED A SIGUSR1\n");
-			printf("SKIPPING : ");
-			display_data(&current_prime, reverse_flag);
+			printf("RECEIVED A SIGUSR1 signal.");
+			printf("SKIPPING NEXT PRIME %d \n", current_prime = next_prime(current_prime, reverse_flag));
+			//display_data(&current_prime, reverse_flag);
 			break;
 		case SIGUSR2:
-			printf("RECEIVED A SIGUSR2\n");
+			printf("RECEIVED A SIGUSR2 signal. Reverse the prime sequence.\n");
 			reverse_flag *= -1;
 			break;
 		case SIGINT:
@@ -168,6 +168,8 @@ int next_prime(int num, int reverse_flag)
 		c = 2;
 	else if (num == 2)
 		c = 3;
+	else if (num == 3 && reverse_flag == -1)
+		c = 2;
 	else if ( num & 1 )
 	{
 		// Value should be 1 for increment/ -1 to decrement
@@ -182,8 +184,7 @@ int next_prime(int num, int reverse_flag)
 
 int is_prime(int num)
 {
-	
-	int c = 0;
+	//int c = 0;
 	if ((num & 1) == 0 )
 		return num == 2;
 	else

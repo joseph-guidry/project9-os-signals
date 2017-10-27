@@ -26,7 +26,9 @@ int main(int argc, char **argv)
 
     printf("Send SIGUSR1\n");
     kill(pid,SIGUSR1);
-    usleep(SLEEP_TIME * 2);
+    usleep(SLEEP_TIME);
+    usleep(SLEEP_TIME);
+    usleep(SLEEP_TIME);
 
     printf("Send SIGUSR2\n");
     kill(pid,SIGUSR2);
@@ -39,10 +41,11 @@ int main(int argc, char **argv)
     printf("Send SIGTERM\n");
     kill(pid,SIGTERM);
     usleep(SLEEP_TIME);
+    usleep(SLEEP_TIME);
 
     printf("Send SIGKILL\n");
     kill(pid,SIGKILL);
-    usleep(SLEEP_TIME);
+
 
 	return 0;
 }
