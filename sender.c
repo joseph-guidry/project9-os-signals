@@ -11,12 +11,13 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		fprintf(stderr, "Usage ./Signal_Sender 'pgrep Signal_Receiver'\n");
+		fprintf(stderr, "Usage ./SIGTX `pgrep SIGRX`\n");
+		return 1;
 	}
 	
-	unsigned pid = atoi(argv[1]);
+	long unsigned pid = atoi(argv[1]);
 
-	printf("pid=%u\n",pid);
+	printf("pid=%lu\n",pid);
     usleep(SLEEP_TIME);
 
     printf("Send SIGHUP\n");
@@ -25,7 +26,7 @@ int main(int argc, char **argv)
 
     printf("Send SIGUSR1\n");
     kill(pid,SIGUSR1);
-    usleep(SLEEP_TIME);
+    usleep(SLEEP_TIME * 2);
 
     printf("Send SIGUSR2\n");
     kill(pid,SIGUSR2);
