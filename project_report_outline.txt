@@ -1,0 +1,84 @@
+Name:	Joseph C. Guidry
+Date:	28 OCT 2017
+Current Module: Operating Systems Part 1
+Project Name: signaler
+
+Project Goals:
+	<A two to three sentence description of the project and its intent>
+	This project is intended to reinforcing the learning of threads and signals used by the operating systems. 
+	To do this, the program is used to print out increasing prime numbers to STDOUT, at about 0.8 second intervals.
+	The program should respond to interrupts and react accordingly.  The use of threads are to be implemented as a wait timer in
+	between the call to print program data. There will be two separate programs compiled, SIG_RX, the signaler.c file, 
+	and SIG_TX, sender.c.  SIG_RX is started first, and SIG_TX will send the interrupt signals to its process id (PID).
+
+Considerations:
+	<A bulleted list of considerations and conditions which affected the design of your project>
+	- Implementing a wait timer using threads.
+	- Catching signals during the running of a process.
+	- Using interrupts to change the outcome of the program.
+	- Order of the function calls for proper execution. 
+
+Initial Design:
+	<A paragraph or more that adequately describes your program's structure and layout discussing the various modules (.c and corresponding .h files) that you implemented>
+		
+	This program includes the following files:
+		signaler.c: This is the main driver of the project, it includes the use of threads and the signal handler. Other functions 
+					help with the handling of interrupt reactions. 
+		sender.c  : This file is responsible for sending the required signals to the SIG_RX program during execution. 
+
+	This two programs running will send signal interrupts from SIG_TX to the PID of SIG_RX.  SIG_RX displays data to STDOUT, and
+	will wait 0.8 secs in between outputs. This is verified by the date time print out.
+
+	The options using getopt():
+		-s <n>  - this initialize a start point other than the default(2).
+		-r      - this option requires the -s option and will emit decreasing values, less than <n>.
+		-e <n>  - this option sets the exit the program if a prime number greater than <n> would be printed.
+
+Data Flow:
+	<A paragraph or longer describing the data flow of the program in a sequential manner.  Include a diagram when necessary.>
+	In this project the flow of communication begins with the calling of the two programs.
+	First the SIG_RX program begins running, printing the PID, prime number, and date, every 0.8 seconds. 
+	The SIG_TX begins transmitting specified signals in 4 second intervals.  Once the SIG_RX catches a interrupt, it will respond
+	accordingly.  The SIGHUP signal restarts the program with a starting value of 2, the SIGUSR1 will skip the next prime number in
+	the sequence. Lastly, the SIGUSR2 will reverse the order, then decrements the prime numbers towards zero. SIGINT and SIGTERM
+	are caught and then ignored.  
+	The program will exit under a few conditions:
+		- The SIGKILL signal is sent.
+		- If the sequence is going down and prime value is 2.
+		- Prime number reaches the value specified by the -e option, or MAX_INT by default.
+
+Communication Protocol:
+	<Discuss any custom communication protocol you have used including the various request and responses that may be sent and received.>
+	The use of interrupt signals were used by the sender program that was caught by the receiver. This handling allowed the program 
+	to change the behavior of the program.
+
+Potential Pitfalls:
+	<Discuss any potential issues that you might run into while creating the project>
+	- Making threads and sending signals.
+	- Using a thread to suspend/wait.
+	- How to access data points (current prime number) from different segments of the program. 
+
+Test Plan:
+	User Test:
+ 		- The receiver could output the data required.
+		- Output data at 0.8 sec intervals using threads.
+		- Build, then test a signal handler.
+		- Build, then send signals with sender.c file.
+		- Test the reaction of the caught signals to meet the requirements of the project.
+		- Ensure proper timing of the execution, compared against supplemental project information.
+	Test Cases:
+		- Included the testing of the flourishes.
+		- The option -e will work separately, increments towards the value supplied.
+		- The option -r will require the -s option and being at the specified start point.
+		- The option -s will change the starting value from 2 to specified value.
+
+Conclusion:
+	<A review of the project, what worked, what didn’t and how to improve upon your project in the future.>
+	This project combined the use of threads and signals to allow a program to handle interrupts. The program proved to build upon
+	the concepts delivered in the lecture of the course, making it enjoyable to learn. This project also highlights the 
+	complexities the operating system is built on to ensure timely and efficient delivery of shared data, and the handling of
+	signals during the running of a process. 
+
+
+
+
