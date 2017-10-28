@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 				eflag = atoi(optarg);
 				break;
 			case 'r':
-				rflag = 1;
+				reverse_flag = -1;
 				break;
 			case 's':
 				sflag = atoi(optarg);
@@ -61,7 +61,12 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("Option values -e %d -r %d -s %d \n", eflag, rflag, sflag);
+	if (reverse_flag == -1 && sflag == 1)
+	{
+		perror("The -r options requires -s option\n");
+	}
+
+	//printf("Option values -e %d -r %d -s %d \n", eflag, rflag, sflag);
 
 	current_prime = sflag;
     printf("We are looking for prime numbers\n");
@@ -74,7 +79,7 @@ int main(int argc, char **argv)
 	pthread_t wait_thread;
 	long wait_time = 800;
 
-	for ( ;current_prime < eflag; )
+	for ( ; (current_prime = next_prime(current_prime, reverse_flag) ) < eflag; )
 	{
 
 		if ( pthread_create(&wait_thread, NULL, timer, (void *)wait_time) != 0 )
@@ -83,15 +88,18 @@ int main(int argc, char **argv)
 			return(2);
 		}
 
+
+		;
+		printf("[%u] %d \n", (int)getpid(), current_prime);
+		display_date();
+
 		if ( pthread_join(wait_thread, NULL) != 0)
 		{
 			fprintf(stderr, "Failed to join thread\n");
 			return(3);
 		}
 		//printf("reverse_flag = %d \n", reverse_flag);
-		display_data(&current_prime,  reverse_flag);
-		display_date();
-		
+
 	}
 }
 
@@ -139,8 +147,6 @@ void signal_handler (int sig)
 			break;
 		case SIGUSR2:
 			printf("RECEIVED A SIGUSR2 signal. Reverse the prime sequence.\n");
-			display_data(&current_prime, reverse_flag);
-			display_date();
 			reverse_flag *= -1;
 			break;
 		case SIGINT:
@@ -155,20 +161,26 @@ void signal_handler (int sig)
 	}
 }
 
-static void display_data(int * start, int reverse_flag)
-{
-	int pid = (int)getpid();
-	*start = next_prime(*start, reverse_flag);
-	printf("[%d] %d \n", pid, *start);
-}
-
 int next_prime(int num, int reverse_flag)
 {
 	int c;
+#if 0
+	/* 
+	   Test if number would go below the min number set 
+	   by the -e option 
+	*/
+	if (num < end)
+#endif
+
 	if (num < 2)
 		c = 2;
 	else if (num == 2)
+	{
+		// This will allow the program to exit if it reaches 2 after down.
+		if (reverse_flag == -1)
+			exit(0);
 		c = 3;
+	}
 	else if (num == 3 && reverse_flag == -1)
 		c = 2;
 	else if ( num & 1 )
